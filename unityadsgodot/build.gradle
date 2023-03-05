@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "29.0.3"
+    compileSdk 32
+    buildToolsVersion '30.0.3'
 
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 28
+        targetSdk 32
         versionCode 1
         versionName "1.0"
 
@@ -24,9 +24,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     compileOnly fileTree(dir: 'libs', include: ['*.aar'])
     implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'com.unity3d.ads:unity-ads:4.5.0'
 }
 
 task copyResourceToOutput {
