@@ -33,51 +33,45 @@ func _ready():
 		unityads.connect("UnityAdsLoad", self, "_on_UnityAdsLoad")
 		unityads.connect("UnityAdsError", self, "_on_UnityAdsError")
 		unityads.connect("UnityAdsLoadError", self, "_on_UnityAdsLoadError")
-		addsEngine.initialise("1687685", false) # placement id (from your Unity console) and TestMode enabled
+		addsEngine.initialise("1687685", false) # UNITY_ADS_PROJECT (from your Unity console) and TestMode enabled
 	else:
 		print("Couldn't find UnityAdsGodot plug-in")
 
-func _on_adsReady():
-	print("video adds should be ready.")
-	
-func _on_adsFinished(placement, reason):
-	reason = int(reason)
-	if reason == 2:
-		print("Completed")
-	elif reason == 1:
-		print("User skiped ad")
-	else:
-		print("Something went wrong")
+func _on_UnityAdsReady():
+	print("UnityAdsReady is ready")
+			
+func _on_UnityAdsError(reason, message=""):
+	print("UnityAdsError. Reason: "+reason+", "+message)
 
-func _on_adsError(reasonString):
-	print(reasonString)
+var loadedAdsCount = 0
+func _on_UnityAdsLoad(id=""):
+	print("_on_UnityAdsLoad")
+	loadedAdsCount += 1	
 	
-func _on_bannerLoaded():
-	print("Banner loaded")
-	
-func _on_bannerError(reasonString):
-	print(reasonString)
-
-func _on_VideoAd_pressed():
-	if addsEngine != null:
-		addsEngine.loadAd("video")
-		while !addsEngine.isReady("video"):
-			pass # There should be another way to do this!
-		
-		addsEngine.show("video")
+func _on_UnityAdsLoadError(reason, message=""):
+	print("UnityAdsLoadError. Reason: "+reason+", "+message)
+	unityads.loadAd("placementID")
 
 func _on_RewardedVideo_pressed():
-	if addsEngine != null:
-		addsEngine.loadAd("rewardedVideo")
-		while !addsEngine.isReady("rewardedVideo"):
-			pass # There should be another way to do this!
+	if unityads != null:
+		unityads.loadAd("placementID")
+		if loadedAdsCount==0:
+			unityads.loadAd("placementID")
+			while loadedAdsCount==0:
+				yield(get_tree().create_timer(0.5), "timeout")		
+		unityads.show("placementID") #Take placementID from unity console
 		
-		addsEngine.show("rewardedVideo")
+		
+func _on_UnityAdsFinished(placement, reason):
+	loadedAdsCount -= 1
+	reason = int(reason)
+	if reason == 2:
+		print("UnityAdsFinished good")
+	elif reason == 1:
+		print("UnityAdsFinished User skipped ad")
+	else:
+		print("UnityAdsFinished Something went wrong")		
 
-
-func _on_BannerAd_pressed():
-	if addsEngine != null:
-		addsEngine.showBanner("banners")
 ```
 
 ## Known issues
