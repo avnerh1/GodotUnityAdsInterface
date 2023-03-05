@@ -1,4 +1,4 @@
-# Unity ads for godot using new export template system
+# Unity ads for Godot Engine 3.5.x
 
 Current version of the `unityadsgodot-release.aar` is available for download under [Releases](https://github.com/avnerh1/GodotUnityAdsInterface/releases)
 
@@ -26,15 +26,16 @@ var addsEngine = null
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	if Engine.has_singleton("UnityAdsGodot"):
-		addsEngine = Engine.get_singleton("UnityAdsGodot")
-		addsEngine.connect("UnityAdsReady", self, "_on_adsReady")
-		addsEngine.connect("UnityAdsFinish", self, "_on_adsFinished")
-		addsEngine.connect("UnityAdsError", self, "_on_adsError")
-		addsEngine.connect("UnityBannerLoaded", self, "_on_bannerLoaded")
-		addsEngine.connect("UnityBannerError", self, "_on_bannerError")
+		unityads = Engine.get_singleton("UnityAdsGodot")
+		unityads.connect("UnityAdsReady", self, "_on_UnityAdsReady")
+		unityads.connect("UnityAdsStart", self, "_on_UnityAdsStart")
+		unityads.connect("UnityAdsFinish", self, "_on_UnityAdsFinished")
+		unityads.connect("UnityAdsLoad", self, "_on_UnityAdsLoad")
+		unityads.connect("UnityAdsError", self, "_on_UnityAdsError")
+		unityads.connect("UnityAdsLoadError", self, "_on_UnityAdsLoadError")
 		addsEngine.initialise("1687685", false) # placement id (from your Unity console) and TestMode enabled
 	else:
-		print("Couldn't find HelloSignals singleton")
+		print("Couldn't find UnityAdsGodot plug-in")
 
 func _on_adsReady():
 	print("video adds should be ready.")
