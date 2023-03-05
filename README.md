@@ -43,27 +43,23 @@ func _on_UnityAdsReady():
 func _on_UnityAdsError(reason, message=""):
 	print("UnityAdsError. Reason: "+reason+", "+message)
 
-var loadedAdsCount = 0
 func _on_UnityAdsLoad(id=""):
 	print("_on_UnityAdsLoad")
-	loadedAdsCount += 1	
 	
 func _on_UnityAdsLoadError(reason, message=""):
 	print("UnityAdsLoadError. Reason: "+reason+", "+message)
 	unityads.loadAd("placementID")
 
 func _on_RewardedVideo_pressed():
-	if unityads != null:
-		unityads.loadAd("placementID")
-		if loadedAdsCount==0:
+	if unityads != null and unityads.unityads():
+		if !unityads.adIsLoaded():
 			unityads.loadAd("placementID")
-			while loadedAdsCount==0:
+			while !unityads.adIsLoaded():
 				yield(get_tree().create_timer(0.5), "timeout")		
 		unityads.show("placementID") #Take placementID from unity console
 		
 		
 func _on_UnityAdsFinished(placement, reason):
-	loadedAdsCount -= 1
 	reason = int(reason)
 	if reason == 2:
 		print("UnityAdsFinished good")
